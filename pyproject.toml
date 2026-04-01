@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "convergence_logger"
+version = "0.1.0"
+description = "A python package to monitor the convergence of ML algorithms."
+readme = "README.md"
+requires-python = ">=3.9"
+license-files = ["LICENSE.txt"]
+authors = [{ name = "Joao Hespanha", email = "hespanha@ece.ucsb.edu" }]
+
+dependencies = ["numpy>=1.26", "matplotlib"]
+
+[tool.setuptools.packages.find]
+where = ["."]                    # Scans for packages in the "." directory
+include = ["convergence_logger"] # Only includes packages matching this pattern
+exclude = ["*.tests"]            # Excludes test packages
+namespaces = true                # Enables implicit namespace packages (default behavior)
