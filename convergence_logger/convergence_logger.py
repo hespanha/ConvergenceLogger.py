@@ -313,7 +313,7 @@ class CountMinMaxMeanVarStd(IntervalStatistics):
 ################################
 
 
-class Series_Statistics:
+class LoggerStatistics:
     """
     Class to track statistics of a series of values over time intervals.
     """

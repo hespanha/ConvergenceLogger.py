@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from convergence_logger import Series_Statistics, CountMinMaxMeanVarStd
+from convergence_logger import LoggerStatistics, CountMinMaxMeanVarStd
 
 import unittest
 
@@ -10,7 +10,7 @@ class TestConvergenceLogger(unittest.TestCase):
     def test_add_values(self):
 
         n_intervals = 5
-        logger = Series_Statistics(CountMinMaxMeanVarStd(), n_intervals, 2)
+        logger = LoggerStatistics(CountMinMaxMeanVarStd(), n_intervals, 2)
         print(logger)
 
         logger.add_value(1.0, [10, -10.0])
@@ -63,7 +63,7 @@ class TestConvergenceLogger(unittest.TestCase):
             ax[2].set_ylabel("1st value")
             ax[3].set_ylabel("2nd value")
             stats = CountMinMaxMeanVarStd()
-            logger = Series_Statistics(stats, n_intervals, n_values)
+            logger = LoggerStatistics(stats, n_intervals, n_values)
             fig.show()
             # print(logger)
 
