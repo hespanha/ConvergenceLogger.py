@@ -13,6 +13,7 @@
 1) Build
 
         ```bash
+        source .venv/bin/activate 
         pip install --upgrade build twine
         python -m build
         ```
@@ -37,7 +38,7 @@
         rm -r testenv
         python -m venv testenv
         source testenv/bin/activate 
-        pip install git+https://github.com/hespanha/TrackResults.py
+        pip install git+https://github.com/hespanha/ConvergenceLogger.py
         python -c "import convergence_logger; print('Success')"
         deactivate
         rm -r testenv
