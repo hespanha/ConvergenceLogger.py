@@ -10,7 +10,7 @@
 
 ## Publish
 
-1) Build
+1) Build (needed each time before publishing a new version)
 
         ```bash
         source .venv/bin/activate 
