@@ -175,8 +175,8 @@ class CountMinMaxMeanVarStd(IntervalStatistics):
             return
         t_good = t[good]
         y_good = y[good]
-        if len(t_good) <= 75:
-            s = max(75 / len(t_good), 1) ** 2
+        if len(t_good) <= 50:
+            s = max(20 / len(t_good), 1) ** 2  # units of points^2
             if color is None:
                 axis.scatter(t_good, y_good, s=s, label=label)
             else:
@@ -555,7 +555,7 @@ class LoggerStatistics:
         """
         if self.min_time == np.inf:  # nothing to plot
             return
-        (t, values) = self.get_series(value)
+        t, values = self.get_series(value)
         # values[np.isinf(values)] = np.nan
         # if value == 0:  # loss
         #    print(f"t {t.shape} =")
