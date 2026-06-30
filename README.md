@@ -20,62 +20,75 @@ Create a local environment and install `convergence_logger` and its dependencies
 
 ## Usage Example
 
-    ```python
-    from convergence_logger import LoggerStatistics, CountMinMaxMeanVarStd
-    import matplotlib.pyplot as plt
-    import numpy as np
+The following example demonstrates how to use `LoggerStatistics` to track and visualize three
+different metrics over time and produces the following plot. 
 
-    # Logger configuration
-    # The logger will track 3 different values/metrics
-    n_values = 3
+![Example](docs/images/example_plot.png)
 
-    # The logger will compress time into a maximum of 200 time intervals
-    n_intervals = 200
+```python
+from convergence_logger import LoggerStatistics, CountMinMaxMeanVarStd
+import matplotlib.pyplot as plt
+import numpy as np
 
-    # Configure the logger to track: count, min, max, mean, variance, and std-dev
-    stats = CountMinMaxMeanVarStd()
+# Logger configuration
+n_values = 3  # Track 3 different metrics
+n_intervals = 200  # Compress time into 200 intervals
+stats = CountMinMaxMeanVarStd()
+logger = LoggerStatistics(stats, n_intervals, n_values)
 
-    # Create the logger instance
-    logger = LoggerStatistics(stats, n_intervals, n_values)
+# Create figure and axes for plots
+fig, axes = plt.subplots(3, 1, figsize=(10, 8))
+ax = list(axes)
+for a in ax:
+    a.grid(True)
 
-    # Create figure and axes for plots
-    fig, ax = plt.subplots(3, 1, figsize=(10, 8))
-    for a in ax:
-        a.grid(True)
+ax[0].set_ylabel("1st value")
+ax[1].set_ylabel("2nd value")
+ax[2].set_ylabel("2nd and 3rd values")
+ax[2].set_xlabel("iterations")
+# Add a twin axis for the 1st plot to show two different metrics
+ax.append(ax[0].twinx())
+ax[3].set_ylabel("2nd value")
 
-    # Optional: Add a twin axis for the last plot
-    ax = np.append(ax, ax[2].twinx())
-    ax[2].set_ylabel("Metric A")
-    ax[3].set_ylabel("Metric B")
+plt.tight_layout()
 
-    ## Add values to the logger (simulated data)
-    for t in np.linspace(0, 10, 2000):
-        logger.add_value(
-            float(t),
-            [
-                0.9 * (3.0 + t * (1.0 + 0.1 * np.random.randn())) ** 2,
-                1.0 * (t * (1.0 + 0.1 * np.random.randn())) ** 2,
-                1.2 * (-3.0 + t * (1.0 + 0.1 * np.random.randn())) ** 2,
-            ],
-        )
+for iteration in np.linspace(0, 10000, 2000):
+    # Add values to the logger (simulated data)
+    logger.add_value(
+        float(iteration),
+        [
+            0.9 * (3.0 + iteration * (1.0 + 0.1 * np.random.randn())) ** 2,
+            1.0 * (iteration * (1.0 + 0.1 * np.random.randn())) ** 2,
+            1.2 * (-3.0 + iteration * (1.0 + 0.1 * np.random.randn())) ** 2,
+        ],
+    )
 
-    ## Update the plots
-    # Remove previous data from all axes
-    for a in ax:
-        logger.plot_remove(a)
+    if iteration % 1000 == 0 or iteration == 100 * (10 * n_intervals - 1):
+        # Update the plots every 1000 iterations (and at the last iteration)
 
-    # Add specific statistical plots to the axes
-    logger.plot(stats.plot_mean_range, ax[0], 0)
-    logger.plot(stats.plot_std, ax[0], 1)
-    logger.plot(stats.plot_mean_std, ax[1], 1)
-    logger.plot(stats.plot_mean, ax[2], 2, color="C0", label="Value 2")
-    logger.plot(stats.plot_mean, ax[3], 1, color="C1", label="Value 1")
+        # clear previous data from the axes
+        for a in ax:
+            logger.plot_remove(a)
 
-    # Finalize layout
-    ax[0].legend()
-    ax[1].legend()
-    ax[2].legend(loc="upper left")
-    ax[3].legend(loc="lower right")
-    plt.tight_layout()
-    plt.show()
-    ```
+        # Plot mean/std for the 1st value (left), and std for the 2nd value (right)
+        logger.plot(stats.plot_mean_std, ax[0], 0, color="C0", label="1st value mean")
+        logger.plot(stats.plot_std, ax[3], 1, color="C1", label="2nd value std")
+
+        # Plot mean and range for the 2nd value
+        logger.plot(stats.plot_mean_range, ax[1], 1, color="C1", label="2nd value mean")
+
+        # Plot mean/std for the 3rd value and mean for the 2nd value
+        logger.plot(stats.plot_mean_std, ax[2], 2, color="C2", label="3rd value mean")
+        logger.plot(stats.plot_mean, ax[3], 1, color="C1", label="2nd value mean")
+
+        # Finalize layout
+        ax[0].legend(loc="upper left")
+        ax[1].legend(loc="upper left")
+        ax[2].legend(loc="upper left")
+        ax[3].legend(loc="lower right")
+
+        # force redraw
+        fig.canvas.draw()
+        fig.canvas.flush_events()
+        plt.pause(0.0001)
+```

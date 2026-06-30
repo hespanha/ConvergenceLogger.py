@@ -1,4 +1,11 @@
+from importlib.metadata import PackageNotFoundError, version
+
 __all__ = ["LoggerStatistics", "CountMinMaxMeanVarStd"]
-__version__ = "0.1.1"
+
+try:
+    __version__ = version("convergence_logger")
+except PackageNotFoundError:
+    # package is not installed
+    __version__ = "unknown"
 
 from .convergence_logger import LoggerStatistics, CountMinMaxMeanVarStd
